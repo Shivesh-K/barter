@@ -1,16 +1,11 @@
-# barter
+# Barter
 
-A new Flutter project.
+An app where people can barter there things.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Features
+- One can view the items(barts) others have posted for barter nearby.
+- They can chat with other people.
+- They can send a request for a barter to other people against their own barts.
+- The reciever can accept a request against one of the provided offers or reject it.
+- Everyone can create their own barts as well.
+- Users can view their barter history, barts that they have added and their sent requests.
