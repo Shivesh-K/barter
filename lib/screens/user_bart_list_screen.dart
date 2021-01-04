@@ -14,23 +14,23 @@ class _UserBartListScreenState extends State<UserBartListScreen> {
   final _auth = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
 
-  bool _isLoading = true;
-  String _id;
-  List<DocumentSnapshot> _barts;
+  // bool _isLoading = true;
+  // String _id;
+  // List<DocumentSnapshot> _barts;
 
   @override
   void initState() {
-    _id = _auth.currentUser.uid;
-    (() async {
-      _barts = (await _db
-              .collection('barts')
-              .where('author.uid', isEqualTo: _id)
-              .get())
-          .docs;
-      setState(() {
-        _isLoading = false;
-      });
-    })();
+    // _id = _auth.currentUser.uid;
+    // (() async {
+    //   _barts = (await _db
+    //           .collection('barts')
+    //           .where('author.uid', isEqualTo: _id)
+    //           .get())
+    //       .docs;
+    //   setState(() {
+    //     _isLoading = false;
+    //   });
+    // })();
     super.initState();
   }
 
@@ -41,18 +41,59 @@ class _UserBartListScreenState extends State<UserBartListScreen> {
         physics: BouncingScrollPhysics(),
         slivers: [
           CustomSliverAppBar(title: "My Barts"),
-          _isLoading
-              ? SliverFillRemaining(
+          // _isLoading
+          //     ? SliverFillRemaining(
+          //         child: Center(
+          //           child: CircularProgressIndicator(),
+          //         ),
+          //       )
+          //     :
+          StreamBuilder(
+            stream: _db
+                .collection('barts')
+                .where('author.uid', isEqualTo: _auth.currentUser.uid)
+                .snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                return SliverFillRemaining(
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
-                )
-              : SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => BartListItem(docSnap: _barts[index]),
-                    childCount: _barts.length,
+                );
+              }
+
+              if (snapshot.hasError) {
+                return SliverFillRemaining(
+                  child: Center(
+                    child: Icon(
+                      Icons.error_outline,
+                      size: 60,
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
+                );
+              }
+
+              final barts = snapshot.data.docs;
+
+              return barts.length < 1
+                  ? SliverFillRemaining(
+                      child: Center(
+                        child: Icon(
+                          Icons.add,
+                          size: 60,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => BartListItem(docSnap: barts[index]),
+                        childCount: barts.length,
+                      ),
+                    );
+            },
+          ),
         ],
       ),
     );

@@ -43,6 +43,7 @@ class _BartListItemState extends State<BartListItem> {
       child: Container(
         margin: EdgeInsets.all(16),
         child: Stack(
+          alignment: Alignment.bottomRight,
           children: [
             Row(
               children: [
@@ -104,25 +105,41 @@ class _BartListItemState extends State<BartListItem> {
               ],
             ),
             widget.docSnap.data()['author']['uid'] == _auth.currentUser.uid
-                ? Container(
-                    margin: EdgeInsets.fromLTRB(260, 160, 0, 0),
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: _status == BartStatus.ACTIVE.index
-                          ? Colors.grey[50]
-                          : Colors.green,
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                    child: Text(
-                      _status == BartStatus.ACTIVE.index ? "Active" : "Barted",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: _status == BartStatus.ACTIVE.index
-                            ? Colors.black
-                            : Colors.white,
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      _status == BartStatus.ACTIVE.index
+                          ? IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: _deleteBart,
+                              color: Colors.red,
+                            )
+                          : SizedBox(width: 0),
+                      SizedBox(width: 8),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: _status == BartStatus.ACTIVE.index
+                              ? Colors.grey[50]
+                              : Colors.green,
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        child: Text(
+                          _status == BartStatus.ACTIVE.index
+                              ? "Active"
+                              : "Barted",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: _status == BartStatus.ACTIVE.index
+                                ? Colors.black
+                                : Colors.white,
+                          ),
+                        ),
                       ),
-                    ),
+                      SizedBox(width: 8),
+                    ],
                   )
                 : Container(
                     margin: EdgeInsets.only(top: 146),
@@ -184,5 +201,13 @@ class _BartListItemState extends State<BartListItem> {
 
   void _createRequest() {
     Navigator.of(context).pushNamed('/new/request', arguments: widget.docSnap);
+  }
+
+  void _deleteBart() async {
+    try {
+      await widget.docSnap.reference.delete();
+    } catch (e) {
+      print("This bart could not be deleted!");
+    }
   }
 }

@@ -36,6 +36,34 @@ class _RequestListItemState extends State<RequestListItem> {
         child: CircularProgressIndicator(),
       );
     else {
+      if (!_forSnap.exists)
+        return Container(
+          height: 60,
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.green[100],
+                blurRadius: 8,
+                spreadRadius: 2,
+                offset: Offset(0, 8),
+              )
+            ],
+          ),
+          child: Center(
+            child: Text(
+              "You deleted the bart this requested.",
+              style: TextStyle(
+                fontSize: 18,
+                fontStyle: FontStyle.italic,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        );
+
       final _data = _forSnap.data();
       return InkWell(
         onTap: widget.snap.data()['from']['id'] != _auth.currentUser.uid

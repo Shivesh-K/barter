@@ -63,6 +63,20 @@ export const acceptRequest = functions.firestore
         }
     });
 
+export const bartDeleted = functions.firestore
+    .document('/barts/{bartId}')
+    .onDelete(async (snapshot, context) => {
+        const firestore = admin.firestore();
+        const batch = firestore.batch();
+        const requests = await firestore.collection('requests').where('for.id', '==', snapshot.id).get();
+        try {
+            requests.docs.forEach(doc => batch.update(doc.ref, { 'status': RequestStatus.REJECTED }));
+            await batch.commit();
+        } catch (e) {
+            console.log("There was some error!");
+        }
+    });
+
 export const messageSent = functions.firestore
     .document('/chats/{chatId}/messages/{messageId}')
     .onCreate(async (snapshot, context) =>
